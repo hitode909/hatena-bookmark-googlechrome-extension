@@ -1044,7 +1044,21 @@ var ViewManager = {
                 }, 0);
             }
         });
-    }
+    },
+    closeOnUnfocus: function() {
+        var self = ViewManager;
+        chrome.tabs.getCurrent(function(current_tab) {
+            var current_tab_id = current_tab.id;
+            var close_timer = setInterval(function() {
+                chrome.tabs.getSelected(null, function(selected_tab) {
+                    if (selected_tab.id != current_tab_id) {
+                        clearInterval(close_timer);
+                        closeWin();
+                    }
+                });
+            }, 100);
+        });
+    },
 }
 
 /*
@@ -1147,6 +1161,10 @@ var ready = function() {
     if (request_uri.param('error')) {
         ViewManager.show('bookmark');
         return;
+    }
+
+    if (!window.popupMode) {
+        ViewManager.closeOnUnfocus();
     }
 
     if (request_uri.param('view')) {
