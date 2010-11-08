@@ -7,6 +7,8 @@ Config.View = {
         var self = this;
         $(':text').each(self.textUpdateHandler);
         $(':radio').each(self.radioHander);
+        $(':checkbox').each(self.checkboxHander);
+        $('select').each(self.selectHandler);
         /*
         Object.keys(Config.configs).forEach(function(key) {
             var targets = document.getElementsByName(key);
@@ -60,6 +62,35 @@ Config.View = {
                 Config.set(key, val);
                 Config.View.afterUpdate(key);
             }
+        };
+        target.bind('change', updateHandler);
+        Config.View.afterUpdate(key);
+    },
+    selectHandler: function(target) {
+        var target = $(this);
+        var key = target.attr('name');
+        var config = Config.configs[key];
+        var culVal = Config.get(key);
+        if (target.attr('value') != culVal) {
+            target.val(culVal);
+        }
+        var updateHandler = function() {
+            var val = target.attr('value');
+            Config.set(key, val);
+            Config.View.afterUpdate(key);
+        };
+        target.bind('change', updateHandler);
+        Config.View.afterUpdate(key);
+    },
+    checkboxHander: function(target) {
+        var target = $(this);
+        var key = target.attr('name');
+        var config = Config.configs[key];
+        var culVal = Config.get(key);
+        target.attr('checked', culVal ? 'checked' : '');
+        var updateHandler = function() {
+            Config.set(key, target.is(':checked'));
+            Config.View.afterUpdate(key);
         };
         target.bind('change', updateHandler);
         Config.View.afterUpdate(key);
