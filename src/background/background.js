@@ -138,7 +138,7 @@ $.extend(Manager, {
         });
         var id = 'hatena-bookmark-googlechrome-extension-popup';
 
-        var geometry = 'width=550,height=550'; // TODO: load config
+        var geometry = 'width=550,height=600'; // TODO: load config
 
         window.open(
             uri.pathQuery,
