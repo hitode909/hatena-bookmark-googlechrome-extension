@@ -47,6 +47,16 @@
         'popup.lastView': 'comment',
         'content.webinfo.enabled': true,
         'background.bookmarkcounter.enabled': true,
+        'shortcuts.addBookmark.key': 'c',
+        'shortcuts.addBookmark.ctrl': false,
+        'shortcuts.addBookmark.shift': false,
+        'shortcuts.addBookmark.alt': false,
+        'shortcuts.addBookmark.meta': false,
+        'shortcuts.showComment.key': 'c',
+        'shortcuts.showComment.ctrl': false,
+        'shortcuts.showComment.shift': true,
+        'shortcuts.showComment.alt': false,
+        'shortcuts.showComment.meta': false,
     };
     Object.keys(defaults).forEach(function(key) {
         Config.append(key, defaults[key]);
