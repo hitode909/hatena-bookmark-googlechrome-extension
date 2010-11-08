@@ -66,6 +66,7 @@
       "run_at": "document_end",
       "all_frames": false,
       "js": [
+        "content/content_api.js",
         "content/widget_embedder.js",
         "content/key_handler.js"
       ],

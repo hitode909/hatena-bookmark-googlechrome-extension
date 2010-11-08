@@ -145,19 +145,11 @@ var KeyManager = {
 };
 
 KeyManager.add("addBookmark", function () {
-    var self = KeyManager;
-    self.port.postMessage({
-        message: 'popup_add_bookmark',
-        data: { url: location.href },
-    });
+    ContentAPI.addBookmark(location.href);
 });
 
 KeyManager.add("showComment", function () {
-    var self = KeyManager;
-    self.port.postMessage({
-        message: 'popup_show_comment',
-        data: { url: location.href },
-    });
+    ContentAPI.showComment(location.href);
 });
 
 if (window.top == window.self)
