@@ -152,5 +152,5 @@ KeyManager.add("showComment", function () {
     ContentAPI.showComment(location.href);
 });
 
-if (window.top == window.self)
+if (window.top == window.self && location.href.indexOf("http://reader.livedoor.com/reader/") == -1 && location.href.indexOf("http://fastladder.com/reader/") == -1)
     KeyManager.init();

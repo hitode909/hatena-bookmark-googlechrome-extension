@@ -77,6 +77,17 @@
         "http://*/*",
         "https://*/*"
       ]
+    },
+    {
+      "run_at": "document_end",
+      "all_frames": false,
+      "js": [
+        "content/ldr.js"
+      ],
+      "matches": [
+        "http://reader.livedoor.com/reader/",
+        "http://fastladder.com/reader/"
+      ]
     }
   ],
   "options_page": "background/config.html",
