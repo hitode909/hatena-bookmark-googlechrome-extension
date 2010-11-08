@@ -151,6 +151,16 @@ $.extend(Manager, {
     },
     popupShowComment: function(data) {
         Manager.showPopupWindow({ url: data.url, view: 'comment'});
+    },
+    getConfig: function(data, port) {
+        var config = {  };
+        data.keys.forEach(function(key) {
+            config[key] = Config.get(key);
+        });
+        port.postMessage({
+            message: 'send_config',
+            data: config,
+        });
     }
 });
 
@@ -182,6 +192,10 @@ ConnectMessenger.bind('get_siteinfos_with_xpath', function(event, data, port) {
         // console.log('got request of siteinfos whose domain is XPath');
         SiteinfoManager.sendSiteinfosWithXPath(port);
     }
+});
+
+ConnectMessenger.bind('get_config', function(event, data, port) {
+    Manager.getConfig(data, port);
 });
 
 ConnectMessenger.bind('popup_add_bookmark', function(event, data, port) {
