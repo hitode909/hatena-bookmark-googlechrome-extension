@@ -45,7 +45,7 @@ namespace :manifest do
       exit 1
     end
     data = JSON.parse manifest_path.read
-    schema = JSON.parse open('http://gist.github.com/179669.txt').read # manifest.json schema by os0x
+    schema = JSON.parse open('https://gist.github.com/179669.txt').read # manifest.json schema by os0x
     puts "JSON schema check."
     begin
       JSON::Schema.validate(data, schema)
