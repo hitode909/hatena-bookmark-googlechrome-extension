@@ -130,6 +130,28 @@ $.extend(Manager, {
             });
         });
     },
+    showPopupWindow: function(data) {
+        var uri = URI.pathQuery('/background/popup.html');
+        uri.param({
+            url: data.url,
+            view: data.view,
+        });
+        var id = 'hatena-bookmark-googlechrome-extension-popup';
+
+        var geometry = 'width=550,height=550'; // TODO: load config
+
+        window.open(
+            uri.pathQuery,
+            id,
+            geometry + 'menubar=no,toolbar=no,location=no,status=no,resizable=yes'
+        );
+    },
+    popupAddBookmark: function(data) {
+        Manager.showPopupWindow({ url: data.url, view: 'bookmark'});
+    },
+    popupShowComment: function(data) {
+        Manager.showPopupWindow({ url: data.url, view: 'comment'});
+    }
 });
 
 var ConnectMessenger = $({});
@@ -160,6 +182,14 @@ ConnectMessenger.bind('get_siteinfos_with_xpath', function(event, data, port) {
         // console.log('got request of siteinfos whose domain is XPath');
         SiteinfoManager.sendSiteinfosWithXPath(port);
     }
+});
+
+ConnectMessenger.bind('popup_add_bookmark', function(event, data, port) {
+    Manager.popupAddBookmark(data);
+});
+
+ConnectMessenger.bind('popup_show_comment', function(event, data, port) {
+    Manager.popupShowComment(data);
 });
 
 var bookmarkeditBridgePorts = {};

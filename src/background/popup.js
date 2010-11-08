@@ -21,7 +21,7 @@ if (popupMode) {
                 windowId: win.id,
                 tabId: tab.id,
             }
-            loadWindowPosition(win);
+            // loadWindowPosition(win);
         });
     });
     chrome.windows.onRemoved.addListener(function(windowId) {
@@ -39,13 +39,13 @@ if (popupMode) {
             }
         });
     });
-    if (window.currentWin) {
-        setInterval(function() {
-            chrome.windows.get(currentWin.id, function(win) {
-                saveWindowPositions(win);
-            });
-        }, 50);
-    }
+    // if (window.currentWin) {
+    //     setInterval(function() {
+    //         chrome.windows.get(currentWin.id, function(win) {
+    //             saveWindowPositions(win);
+    //         });
+    //     }, 50);
+    // }
 }
 
 
@@ -1148,6 +1148,10 @@ var ready = function() {
     if (request_uri.param('error')) {
         ViewManager.show('bookmark');
         return;
+    }
+
+    if (request_uri.param('view')) {
+        Config.set('popup.lastView', request_uri.param('view'));
     }
 
     if (Config.get('popup.lastView') == 'bookmark') {
