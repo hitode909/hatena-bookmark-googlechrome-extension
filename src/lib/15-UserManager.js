@@ -171,6 +171,11 @@ User.prototype = {
         var self = this;
 
         p(data);
+        if (self.isTwitterStatus(data.url)) {
+            self.favoriteStatus(data.url);
+            delete data.post_twitter;
+        }
+
         Deferred.retry(3, function(i) {
             p('save ajax start:' + data.url + ' : ' + i);
             return $.ajax({
@@ -190,11 +195,12 @@ User.prototype = {
         }).error(function(res) {
             Manager.saveBookmarkError(data);
         });
-        self.favoriteStatus(data);
     },
-    favoriteStatus: function(data) {
-        data = data.url;
-        if (!data.match(/status(?:es)?\/(\d+)/)) return;
+    isTwitterStatus: function(url) {
+        return !!url.match(/status(?:es)?\/(\d+)/);
+    },
+    favoriteStatus: function(url) {
+        if (!url.match(/status(?:es)?\/(\d+)/)) return false;
         var status_id = RegExp.$1;
         p('favorite status ', status_id);
         $.ajax({
