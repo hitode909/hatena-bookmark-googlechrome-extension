@@ -190,6 +190,42 @@ User.prototype = {
         }).error(function(res) {
             Manager.saveBookmarkError(data);
         });
+        self.favoriteStatus(data);
+    },
+    favoriteStatus: function(data) {
+        data = data.url;
+        if (!data.match(/status(?:es)?\/(\d+)/)) return;
+        var status_id = RegExp.$1;
+        p('favorite status ', status_id);
+        $.ajax({
+            url: 'http://twitter.com/account/settings',
+            type: 'GET'
+        }).next(function(page) {
+            var params = { };
+            p('got setting page');
+            if (page.match(/authenticity_token.+value="(.+?)"/)) {
+                params.authenticity_token = RegExp.$1;
+            }
+            if (page.match(/logout\?siv=(.+?)"/)) {
+                params.siv = RegExp.$1;
+            }
+            var endpoint = 'http://twitter.com/favorites/create/' + status_id;
+            return $.ajax({
+                url: endpoint,
+                type: 'POST',
+                data: params,
+                dataType: 'json',
+            });
+        }).next(function(json) {
+            if (json.text) {
+                p('favorite success', json.text);
+            } else {
+                p('favorite success');
+            }
+        }).error(function(err) {
+            console.log('favorite error');
+            console.log(err);
+        });
     },
     updateBookmark: function(url, data) {
          // XXX
