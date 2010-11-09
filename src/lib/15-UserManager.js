@@ -173,7 +173,7 @@ User.prototype = {
         p(data);
         if (self.isTwitterStatus(data.url)) {
             self.favoriteStatus(data.url);
-            delete data.post_twitter;
+	    return;
         }
 
         Deferred.retry(3, function(i) {
