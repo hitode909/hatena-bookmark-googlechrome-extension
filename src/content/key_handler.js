@@ -105,15 +105,8 @@ var KeyManager = {
         var elem = ev.target;
         var tag  = elem.localName.toLowerCase();
 
-        if (tag === 'textarea')
+        if (tag === 'textarea' || tag === 'input')
             return true;
-
-        if (tag === 'input') {
-            var type = elem.getAttribute('type');
-
-            if (!type || type === 'text' || type === 'password')
-                return true;
-        }
 
         return false;
     },
