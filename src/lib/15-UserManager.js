@@ -240,6 +240,9 @@ User.prototype = {
         return true;
     },
     subscribeBlog: function(url) {
+        if (url.match(/twitter\.com/) && url.match(/status/)) {
+            url = url.replace(/\/status(es)?\/\d+/, '');
+        }
         $.ajax({
             url: "http://reader.livedoor.com/subscribe/?url=" + (encodeURIComponent(url)),
             dataType: 'html',
