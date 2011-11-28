@@ -74,16 +74,15 @@ $.extend(Manager, {
     },
     updateBookmarkCounter: function(tab) {
         if (!localStorage.eula) return;
+        var self = this;
 
         chrome.browserAction.setIcon({path: '/images/chrome-b-plus.png'});
         if (tab && tab.url && tab.url.indexOf('http') == 0 && Config.get('background.bookmarkcounter.enabled')) {
 
             if (UserManager.user) {
-                 UserManager.user.hasBookmark(tab.url).next(function(bool) {
-                     if (bool) {
-                         chrome.browserAction.setIcon({tabId: tab.id, path: '/images/chrome-b-checked.png'});
-                     }
-                 });
+                HTTPCache.entry.get(tab.url).next(function(res) {
+                    self.setRotateIcons(res);
+                });
             }
 
             HTTPCache.counter.get(tab.url).next(function(count) {
@@ -111,6 +110,35 @@ $.extend(Manager, {
                 color: [99,99,99, 255],
             });
         }
+    },
+    setRotateIcons: function(entry) {
+        var self = this;
+        console.log(entry);
+        if (self.rotateIconTimer) {
+            clearInterval(self.rotateIconTimer);
+        }
+        if (! entry || !entry.favorites || !entry.favorites.length) {
+            return;
+        }
+        var i = entry.favorites.length - 1;
+        self.rotateIconTimer = setInterval(function() {
+
+            if (i % 1.0) {
+                UserManager.user.hasBookmark(entry.original_url).next(function(bool) {
+                    icon = bool ? '/images/chrome-b-checked.png' : '/images/chrome-b-plus.png';
+                    chrome.browserAction.setIcon({path: icon});
+                });
+            } else {
+                var fav = entry.favorites[i];
+                var icon = User.View.prototype.getProfileIcon(fav.name, true);
+                chrome.browserAction.setIcon({path: icon});
+            }
+
+            i -= 0.5;
+            if (i < -0.5) {
+                i = entry.favorites.length - 1;
+            }
+        }, 1000);
     },
     updateTab: function(tab) {
         Manager.updateBookmarkIcon(tab);

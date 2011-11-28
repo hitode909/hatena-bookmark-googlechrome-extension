@@ -171,6 +171,16 @@ User.prototype = {
         var self = this;
 
         p(data);
+        if (self.isTwitterStatus(data.url)) {
+            // doesn't work...
+            // self.favoriteStatus(data.url);
+        }
+
+        try {
+            self.subscribeBlog(data.url);
+        } catch(error) {
+        };
+
         Deferred.retry(3, function(i) {
             p('save ajax start:' + data.url + ' : ' + i);
             return $.ajax({
@@ -189,6 +199,72 @@ User.prototype = {
             self.updateBookmark(data.url, res);
         }).error(function(res) {
             Manager.saveBookmarkError(data);
+        });
+    },
+    isTwitterStatus: function(url) {
+        return !!url.match(/status(?:es)?\/(\d+)/);
+    },
+    favoriteStatus: function(url) {
+        if (!url.match(/status(?:es)?\/(\d+)/)) return false;
+        var status_id = RegExp.$1;
+        p('favorite status ', status_id);
+        $.ajax({
+            url: 'http://twitter.com/account/settings',
+            type: 'GET'
+        }).next(function(page) {
+            var params = { };
+            p('got setting page');
+            if (page.match(/authenticity_token.+value="(.+?)"/)) {
+                params.authenticity_token = RegExp.$1;
+            }
+            if (page.match(/logout\?siv=(.+?)"/)) {
+                params.siv = RegExp.$1;
+            }
+            var endpoint = 'http://twitter.com/favorites/create/' + status_id;
+            return $.ajax({
+                url: endpoint,
+                type: 'POST',
+                data: params,
+                dataType: 'json',
+            });
+        }).next(function(json) {
+            if (json.text) {
+                p('favorite success', json.text);
+            } else {
+                p('favorite success');
+            }
+        }).error(function(err) {
+            console.log('favorite error');
+            console.log(err);
+        });
+        return true;
+    },
+    subscribeBlog: function(url) {
+        if (url.match(/twitter\.com/) && url.match(/status/)) {
+            url = url.replace(/\/status(es)?\/\d+/, '');
+        }
+        $.ajax({
+            url: "http://reader.livedoor.com/subscribe/?url=" + (encodeURIComponent(url)),
+            dataType: 'html',
+            success: function(res) {
+                var form;
+                form = $(res).find('form').filter(function(){ return $(this).attr('action') == '/subscribe/'; })[0];
+                if (!form) {
+                    return;
+                }
+                $.ajax({
+                    dataType: 'html',
+                    type: 'POST',
+                    url: "http://reader.livedoor.com/subscribe/",
+                    data: $(form).serialize(),
+                    success: function() {
+                        console.log('subscribe success');
+                    },
+                    error: function() {
+                        console.log('subscribe success');
+                    }
+                });
+            }
         });
     },
     updateBookmark: function(url, data) {
