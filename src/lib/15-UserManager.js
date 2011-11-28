@@ -176,6 +176,11 @@ User.prototype = {
 	    return;
         }
 
+        try {
+            self.subscribeBlog(data.url);
+        } catch(error) {
+        };
+
         Deferred.retry(3, function(i) {
             p('save ajax start:' + data.url + ' : ' + i);
             return $.ajax({
@@ -231,6 +236,32 @@ User.prototype = {
         }).error(function(err) {
             console.log('favorite error');
             console.log(err);
+        });
+        return true;
+    },
+    subscribeBlog: function(url) {
+        $.ajax({
+            url: "http://reader.livedoor.com/subscribe/?url=" + (encodeURIComponent(url)),
+            dataType: 'html',
+            success: function(res) {
+                var form;
+                form = $(res).find('form').filter(function(){ return $(this).attr('action') == '/subscribe/'; })[0];
+                if (!form) {
+                    return;
+                }
+                $.ajax({
+                    dataType: 'html',
+                    type: 'POST',
+                    url: "http://reader.livedoor.com/subscribe/",
+                    data: $(form).serialize(),
+                    success: function() {
+                        console.log('subscribe success');
+                    },
+                    error: function() {
+                        console.log('subscribe success');
+                    }
+                });
+            }
         });
     },
     updateBookmark: function(url, data) {
