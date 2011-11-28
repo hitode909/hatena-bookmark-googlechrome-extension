@@ -135,7 +135,7 @@ $.extend(Manager, {
             }
 
             i -= 0.5;
-            if (i < 0) {
+            if (i < -0.5) {
                 i = entry.favorites.length - 1;
             }
         }, 1000);
