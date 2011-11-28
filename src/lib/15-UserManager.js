@@ -172,7 +172,8 @@ User.prototype = {
 
         p(data);
         if (self.isTwitterStatus(data.url)) {
-            self.favoriteStatus(data.url);
+            // doesn't work...
+            // self.favoriteStatus(data.url);
         }
 
         try {
